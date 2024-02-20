@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-   public static ScoreManager Instance;
-   public int highScore;
+    public static ScoreManager Instance;
+    public int highScore;
+    public string player;
 
     private void Awake()
     {

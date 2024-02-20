@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public Text HighScoreText;
     public GameObject GameOverText;
+    public GameObject PlayerNameInput;
+    public TextMeshProUGUI PlayerInputText;
 
     private bool m_Started = false;
     private int m_highScore;
@@ -70,10 +73,9 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-                
             }
+            
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 SceneManager.LoadScene(0);
@@ -109,7 +111,14 @@ public class MainManager : MonoBehaviour
    
     public void GameOver()
     {
+        
+        PlayerNameInput.SetActive(true);
+    }
+    public void InstructionLoad()
+    {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        ScoreManager.Instance.player = PlayerInputText.text;
+        PlayerNameInput.SetActive(false);
     }
 }
