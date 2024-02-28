@@ -118,7 +118,12 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        ScoreManager.Instance.player = PlayerInputText.text;
+        
+        if(m_Points >= ScoreManager.Instance.highScore)
+        {
+            ScoreManager.Instance.player = PlayerInputText.text;
+        }
+        
         PlayerNameInput.SetActive(false);
     }
 }
