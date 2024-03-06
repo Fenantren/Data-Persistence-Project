@@ -7,32 +7,35 @@ using TMPro;
 
 public class HiScoreMenu : MonoBehaviour
 {
-    //public TextMeshProUGUI scoreText;
-    //public TextMeshProUGUI playerName;
-    private Transform entryContainer;
-    private Transform entryTemplate;
+    public TextMeshProUGUI highScore;
+    public TextMeshProUGUI highScoreName;
 
-    private void Awake()
+    public TextMeshProUGUI score2;
+    public TextMeshProUGUI scoreName2;
+
+    public TextMeshProUGUI score3;
+    public TextMeshProUGUI scoreName3;
+
+    private void Update()
     {
-        entryContainer = transform.Find("scoreEntryContainer");
-        entryTemplate = entryContainer.Find("scoreEntryTemplate");
-        //scoreText.text = $"{ScoreManager.Instance.highScore}";
-        //playerName.text = $"{ScoreManager.Instance.player}";
+        highScore.text = ScoreManager.Instance.highScore.ToString();
+        highScoreName.text = ScoreManager.Instance.highScoreName;
 
-        entryTemplate.gameObject.SetActive(false);
+        score2.text = ScoreManager.Instance.score2.ToString();
+        scoreName2.text = ScoreManager.Instance.name2;
 
-        float templateHeight = 30f;
-        
-        for (int i = 1; i < 7; i++)
-        {
-            Transform entryTransform = Instantiate(entryTemplate, entryContainer);
-            RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
-            entryRectTransform.anchoredPosition =  new Vector2(-5, -templateHeight * i);
-            entryTransform.gameObject.SetActive(true);
-        }
+        score3.text = ScoreManager.Instance.score3.ToString();
+        scoreName3.text = ScoreManager.Instance.name3;
+
     }
-    //public void NewScoreAdd()
-    
-    
+
+
+
+
+
+
+
+
+
 
 }

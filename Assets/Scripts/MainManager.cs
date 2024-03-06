@@ -18,18 +18,22 @@ public class MainManager : MonoBehaviour
     public TextMeshProUGUI PlayerInputText;
 
     private bool m_Started = false;
-    private int m_highScore;
+    [SerializeField] int m_highScore;
+    private int m_2ndScore;
+    private int m_3rdScore;
     private int m_Points;
+
 
     private bool m_GameOver = false;
 
 
-   
+
     private void Awake()
     {
         //Allows to see current session's high score upon reloading (new game) 
         HighScoreText.text = $"High Score : {ScoreManager.Instance.highScore}";
         
+
     }
     void Start()
     {
@@ -45,18 +49,18 @@ public class MainManager : MonoBehaviour
                 var brick = Instantiate(BrickPrefab, position, Quaternion.identity);
                 brick.PointValue = pointCountArray[i];
                 brick.onDestroyed.AddListener(AddPoint);
-                
+
             }
         }
     }
 
     private void Update()
     {
-        HighScore();
-       
+        ScoreUpdate();
+
         if (!m_Started)
         {
-            
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 m_Started = true;
@@ -66,64 +70,99 @@ public class MainManager : MonoBehaviour
 
                 Ball.transform.SetParent(null);
                 Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
-                
+
             }
         }
         else if (m_GameOver)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                TopThreeUpdate();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 SceneManager.LoadScene(0);
             }
         }
-       
+
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
-        
-        
+
+
     }
     //Updates the high score in comparison to current score and stores it  (used in Update method) 
-    void HighScore()
+    void ScoreUpdate()
     {
+       
         
-        if (m_Points >= ScoreManager.Instance.highScore)
-        {
-            m_highScore = m_Points;
-            HighScoreText.text = $"High Score : {m_highScore}";
-            ScoreManager.Instance.highScore = m_highScore;
-        }
-        else if (m_Points < ScoreManager.Instance.highScore)
-        {
-            m_highScore = ScoreManager.Instance.highScore;
-        }
+            if (m_Points >= ScoreManager.Instance.highScore)
+            {
+                m_highScore = m_Points;
+                HighScoreText.text = $"High Score : {m_highScore}";
+                ScoreManager.Instance.highScore = m_highScore;
+            }
+            
         
+        
+        
+
     }
-    
-   
+    void TopThreeUpdate()
+    {
+        if (m_Points < ScoreManager.Instance.highScore && ScoreManager.Instance.score2 == 0)
+        {
+            m_2ndScore = m_Points;
+            ScoreManager.Instance.score2 = m_2ndScore;
+        }
+        else if (m_Points < ScoreManager.Instance.highScore && ScoreManager.Instance.score2 != 0 && m_Points > ScoreManager.Instance.score2)
+        {
+            m_2ndScore = m_Points;
+            ScoreManager.Instance.score2 = m_2ndScore;
+        }
+        else if ( ScoreManager.Instance.score2 != 0 && m_Points < ScoreManager.Instance.score2 && m_Points > ScoreManager.Instance.score3)
+        {
+            m_3rdScore = m_Points;
+            ScoreManager.Instance.score3 = m_3rdScore;
+        }
+    }
+
+
     public void GameOver()
     {
-        
+
         PlayerNameInput.SetActive(true);
     }
     public void InstructionLoad()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        
-        if(m_Points >= ScoreManager.Instance.highScore)
+
+        //Update name for top 3 players
+
+        if (m_Points >= ScoreManager.Instance.highScore)
         {
-            ScoreManager.Instance.player = PlayerInputText.text;
+            ScoreManager.Instance.highScoreName = PlayerInputText.text;
         }
-        
+
+        else if (m_Points < ScoreManager.Instance.highScore && m_Points > ScoreManager.Instance.score3)
+        {
+            ScoreManager.Instance.name2 = PlayerInputText.text;
+        }
+
+        else if (m_Points < ScoreManager.Instance.score2)
+        {
+            ScoreManager.Instance.name3 = PlayerInputText.text;
+        }
+
+
+
+
         PlayerNameInput.SetActive(false);
     }
 }
