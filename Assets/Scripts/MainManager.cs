@@ -7,6 +7,8 @@ using TMPro;
 
 public class MainManager : MonoBehaviour
 {
+    #region ScriptVariables
+    
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
@@ -25,7 +27,7 @@ public class MainManager : MonoBehaviour
 
 
     private bool m_GameOver = false;
-
+    #endregion
 
 
     private void Awake()
@@ -77,13 +79,14 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                TopThreeUpdate();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 SceneManager.LoadScene(0);
+                ScoreManager.Instance.SaveScoreInfo();
+                Debug.Log("Data Saved");
             }
         }
 
@@ -107,61 +110,66 @@ public class MainManager : MonoBehaviour
                 HighScoreText.text = $"High Score : {m_highScore}";
                 ScoreManager.Instance.highScore = m_highScore;
             }
-            
-        
-        
-        
 
     }
-    void TopThreeUpdate()
+
+    //Method that updates scores for top 3 players
+    void TopThreeScoreUpdate()
     {
+        //Update for 2nd place
         if (m_Points < ScoreManager.Instance.highScore && ScoreManager.Instance.score2 == 0)
         {
             m_2ndScore = m_Points;
             ScoreManager.Instance.score2 = m_2ndScore;
+            
         }
-        else if (m_Points < ScoreManager.Instance.highScore && ScoreManager.Instance.score2 != 0 && m_Points > ScoreManager.Instance.score2)
+        else if (m_Points < ScoreManager.Instance.highScore && ScoreManager.Instance.score2 != 0 && m_Points >= ScoreManager.Instance.score2)
         {
             m_2ndScore = m_Points;
             ScoreManager.Instance.score2 = m_2ndScore;
         }
-        else if ( ScoreManager.Instance.score2 != 0 && m_Points < ScoreManager.Instance.score2 && m_Points > ScoreManager.Instance.score3)
+        // Update for 3rd place
+        else if (m_Points < ScoreManager.Instance.score2 && m_Points >= ScoreManager.Instance.score3)
         {
             m_3rdScore = m_Points;
             ScoreManager.Instance.score3 = m_3rdScore;
+        }
+    }
+    
+    //Method that updates name for top 3 players
+    void TopThreeNameUpdate()
+    {
+        if (m_Points >= ScoreManager.Instance.highScore)
+        {
+            ScoreManager.Instance.highScoreName = PlayerInputText.text.ToUpper();
+        }
+
+        else if (m_Points < ScoreManager.Instance.highScore && m_Points >= ScoreManager.Instance.score2)
+        {
+            ScoreManager.Instance.name2 = PlayerInputText.text.ToUpper();
+        }
+
+        else if (m_Points < ScoreManager.Instance.score2 && m_Points >= ScoreManager.Instance.score3)
+        {
+            ScoreManager.Instance.name3 = PlayerInputText.text.ToUpper();
         }
     }
 
 
     public void GameOver()
     {
-
         PlayerNameInput.SetActive(true);
     }
+    
+    /* Method used by PlayerName input field component 
+       Shows instructions after the game is over and player has entered their name */
     public void InstructionLoad()
     {
+        TopThreeNameUpdate();
+        TopThreeScoreUpdate();
+
         m_GameOver = true;
         GameOverText.SetActive(true);
-
-        //Update name for top 3 players
-
-        if (m_Points >= ScoreManager.Instance.highScore)
-        {
-            ScoreManager.Instance.highScoreName = PlayerInputText.text;
-        }
-
-        else if (m_Points < ScoreManager.Instance.highScore && m_Points > ScoreManager.Instance.score3)
-        {
-            ScoreManager.Instance.name2 = PlayerInputText.text;
-        }
-
-        else if (m_Points < ScoreManager.Instance.score2)
-        {
-            ScoreManager.Instance.name3 = PlayerInputText.text;
-        }
-
-
-
 
         PlayerNameInput.SetActive(false);
     }
