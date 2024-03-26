@@ -96,7 +96,7 @@ public class ScoreManager : MonoBehaviour
             score3 = 0;
             name3 = null;
 
-            
+            SaveScoreInfo();
         }
     }
 }
